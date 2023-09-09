@@ -1,0 +1,1 @@
+These programs showcase my logical skills in programming and serve as a way for me to track my progress of writing small programs with single functionalities to developing large projects in various languages, environments, and platforms. It serves as a reminder that I was a beginner once and it is through hardwork and perseverance I have gotten to where I am today.
