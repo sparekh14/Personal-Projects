@@ -5,7 +5,7 @@ from email.mime.multipart import MIMEMultipart
 port = 465
 smtp_server = "smtp.gmail.com"
 sender_email = "parekh.samarth@gmail.com"
-password = ""
+password = "heyThere@123"
 context = ssl.create_default_context()
 message = MIMEMultipart("alternative")
 message["Subject"] = "School Clothing"
