@@ -1,0 +1,1 @@
+This is a blog website that is created with C# utilizing the ASP.NET framework. The website uses an SQLite database to store and manage the blog posts. An MVC software design architecture was implemented to develop the web application.
