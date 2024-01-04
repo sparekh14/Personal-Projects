@@ -1,0 +1,96 @@
+demo.sqlite
+- creates a table that will hold the posts
+- contains the same values as that of the PostModel class
+
+appsettings.json
+- stores the configuration information that is applied to the whole application
+- the "ConnectionStrings" property will hold the information to the created database
+
+Views/Posts/Index.cshtml
+- the annotation in the first line states that the webpage can expect PostViewModel to be rendered onto the page
+- the link to creating a new post has asp.net parameters embedded within the a element of HTML
+    - asp-controller: specifies the view that will be used, in this case the Posts folder in Views
+    - asp-action: specifies the acton/link that this directs to, in this case the New Post webpage
+- shows all the posts by utilizing a for-each loop that iterates through the posts and obtains its data and formats it accordingly
+
+Views/Posts/NewPost.cshtml
+- injects a Partial with asp.net to break up the webpage into smaller components
+- asp.net will attempt to look into the same folder that the Partial is created of the file name specified
+- in this case the partial leads to the _InsertForm.cshtml
+
+Views/Posts/ViewPost.cshtml
+- creates the markup for the webpage based on the rendering created in the ViewPost method in PostsController.cs
+
+Views/Posts/_InsertForm.cshtml
+- cannot go to this page directly by using the above route; a feature of using a Partial
+- the markup for the webpage for adding a new post entry
+
+Views/Posts/_UpdateForm.cshtml
+- the markup for the webpage for updating a post entry
+
+PostModel.cs
+- defines the structure of each post
+- contains the different fields that wil be a part of each post
+
+PostViewModel.cs
+- defines the structure of the PostViewModel class that is used in PostsController.cs
+- contains an instance variable of type List that contains PostModel values
+- contains an instance variable of type PostModel which will be used for a singular post when creating and updating
+
+HomeController.cs
+- contains the control logic
+- has methods to show the different webpages (e.g. public IActionResult *page_name*()) that returns an instance of View
+
+PostsController.cs
+- contains the posts logic which will contain the methods for the posts webpage
+
+Constructor
+    - to make use of the ConnectionStrings and access the database, a configuration object has to be passed to the constructor
+    - the object will be private (ensures that it can only be accessed by the class) and readonly (its value can only be set at declaration or in the constructor and cannot be changed elsewhere)
+
+- the Index() method will contain a variable that contains the posts
+- the above variable will be passed into the View() as a parameter as a ViewResult object which specifies a model to be rendered by the view
+- the NewPost() method will return a view of the new post webpage
+- the GetPosts() method will create a connection to the sqlite database, extracting all the posts, and returning it as a model that will be rendered
+
+ViewPost(int id) method
+    - obtains the post through a helper method based on the id parameter passed to the method
+    - creates a new PostViewModel that will be rendered
+    - sets the Post variable of the PostViewModel to be the post which was obtained in the first step
+    - returns and instance of View with the PostViewModel as the parameter and object that will be rendered
+
+EditPost(int id) method
+    - the same as the ViewPost() method described above
+
+GetPostById(int id) method
+    - will return the specified post based on the ID number passed in as the method parameter
+    - follows the same procedure as that of the GetPosts() method
+
+Insert(PostModel post) method
+    - sets the created and updated times for the specific post to the current time
+    - creates a connection to the sqlite database
+    - creates a command variable that works with the database
+    - opens the connection
+    - creates a command/query that will insert the values of the post that is passed into the method to the database
+    - utilizes a try-catch and sends the above created query to the database
+    - the returns statement redirects to the Index action of the PostsController which in this case is the NewPost.cshtml webpage
+
+Update(PostModel post) method
+    - utilizes the same code as the Insert() method with a change in the SQL query to update the necessary values
+
+GetPosts() method
+    - postList is a List of PostModels (established and defined in PostModel.cs) that will contains the posts
+    - utilizes the "using" keyword to ensure proper disposal and closing of the sqlite connection
+        - the SqliteConnection is established by passing in the connection string key that was written in the appsettings.json file
+        - it calls the Dipose() method at the end of its block
+        - inside this block, the object is read-only and cannot be modified or reassigned
+        - the object's class must implement the IDisposable interface for this to work
+        - this ensures that even if an exception occurs, the connection is closed and Close() does not have to be explicitly called
+    - the SqliteConnection was added as a NuGet package (Microsoft.Data.Sqlite) which is not in the .csproj file; creates a connection to the sqlite database
+    - the second "using" block will be used to create a command variable that will be assigned a SqlCommand object associated with the SqlConnection
+        - the connection to the database is opened with Open()
+        - a sqlite command is written with the CommandText property to set the procedure to execute at the data source
+    - the third "using" block will be used to create a reader variable (of type SqliteDataReader) which will be used to execute the query
+        - will check if the table has any rows using the HasRows property
+        - will loop through all the rows using the Read() method (returns true if there are more rows and will advance to the next possible row)
+    - returns an instance of the PostViewModel in the else block (inside the third "using" block) and at the end of the method
